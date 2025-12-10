@@ -1,0 +1,43 @@
+name: Deploy Admin to Vercel
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'admin/**'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./admin
+        run: npm ci
+
+      - name: Build Admin
+        working-directory: ./admin
+        run: npm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+          working-directory: ./admin
+          vercel-args: '--prod'
