@@ -8,7 +8,6 @@ dist/
 build/
 .output/
 .vercel/
-*.log
 
 # Environment variables
 .env
