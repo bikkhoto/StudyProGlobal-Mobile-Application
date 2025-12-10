@@ -6,7 +6,13 @@
 import CryptoJS from 'crypto-js';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-const ENCRYPTION_KEY = 'StudyProGlobal_SecureKey_2024'; // In production, use secure key management
+// SECURITY NOTE: This is a development key. In production:
+// - Use environment variables for the encryption key
+// - Implement proper key management (e.g., AWS KMS, Azure Key Vault)
+// - Generate unique keys per user/session
+// - Rotate keys regularly
+// - Never commit actual production keys to version control
+const ENCRYPTION_KEY = 'StudyProGlobal_SecureKey_2024';
 
 export class EncryptionService {
   /**

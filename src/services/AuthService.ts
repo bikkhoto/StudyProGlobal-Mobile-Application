@@ -3,6 +3,7 @@
  * Handles user authentication with encrypted storage
  */
 
+import EncryptedStorage from 'react-native-encrypted-storage';
 import { EncryptionService } from './EncryptionService';
 import { User } from '../models/Application';
 
@@ -104,8 +105,14 @@ export class AuthService {
    */
   static async logout(): Promise<void> {
     try {
-      await EncryptedStorage.removeItem(this.USER_KEY);
-      await EncryptedStorage.removeItem(this.TOKEN_KEY);
+      const user = await EncryptedStorage.getItem(this.USER_KEY);
+      if (user) {
+        await EncryptedStorage.removeItem(this.USER_KEY);
+      }
+      const token = await EncryptedStorage.getItem(this.TOKEN_KEY);
+      if (token) {
+        await EncryptedStorage.removeItem(this.TOKEN_KEY);
+      }
     } catch (error) {
       console.error('Logout error:', error);
       throw new Error('Failed to logout');
@@ -146,7 +153,7 @@ export class AuthService {
    * Generate unique ID
    */
   private static generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 
   /**
@@ -161,6 +168,3 @@ export class AuthService {
     return EncryptionService.encrypt(JSON.stringify(tokenData));
   }
 }
-
-// Fix import issue
-import EncryptedStorage from 'react-native-encrypted-storage';
